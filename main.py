@@ -5,6 +5,7 @@ import os
 from shutil import copyfileobj
 import consolemenu as cm
 from time import sleep
+from combine_to_pdf import combine_subfolder
 
 def link_to_soup(url) :
     return bs(r.get(url).text, features="lxml")
@@ -96,6 +97,8 @@ def download_chap_images(viewer_url, title, chap_name):
         print(f'Downloaded from {url} to {path}\nStatus code : {response_status}\n')
         sleep(0.3)
     print(f'\nStopped download at page {counter-1}\nStatus code : {response_status}\n')
+    if input('Combine this chapter into a pdf ? (y) ') == 'y' :
+        combine_subfolder(chap_dir=path)
     sleep(1)
 
 def download_menu(data):
