@@ -1,5 +1,5 @@
 # About
-A python file to download scans from the https://scanvf.org/ website and convert them to pdf.
+Python files to download scans from the https://scanvf.org/ website and convert them to pdf.
 # Usage
 The downloads are outputed into the ```./outputs/TITLE/CHAPTER/``` folder.
 
