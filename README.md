@@ -3,7 +3,7 @@ Python files to download scans from the https://scanvf.org/ website and convert 
 # Usage
 Run the ```main.py```file, it will guide you through the process.
 
-The downloads are outputed into the ```./outputs/TITLE/CHAPTER/``` folder.
+The downloads are outputed *by default* into the ```./outputs/TITLE/CHAPTER/``` folder.
 
 *I made the functions' input and output folders all optional arguments that default to ```./outputs/```, but feel free to customize pass the arguments suiting your own needs.*
 ***
