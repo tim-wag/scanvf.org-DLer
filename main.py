@@ -122,7 +122,7 @@ def download_menu(data):
     chap_menu.show()
 
 def main():
-    catalog = input("Manga URL : ")
+    catalog = input('Full Manga URL ("https://scanvf.org/manga/XXXX"): ')
     data = {}
     soup = link_to_soup(catalog)
 
