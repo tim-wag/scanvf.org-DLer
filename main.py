@@ -75,7 +75,7 @@ def download_selected(data) :
         if data[chap]['download']:
             download_chap_images(data[chap]['links']['cdn'], chap)
 
-def download_chap_images(viewer_url, title, chap_name):
+def download_chap_images(viewer_url, title, chap_name, combine_pdf=None):
     first_img_url = get_cdn_link(viewer_url)
 
     base_url = findall(r'^.+(?=/.+$)', first_img_url)[0]
@@ -85,7 +85,7 @@ def download_chap_images(viewer_url, title, chap_name):
     adapter = r.adapters.HTTPAdapter(pool_connections=5, pool_maxsize=5)
     session.mount('https://', adapter)
 
-    path = create_folder(f'{os.path.dirname(__file__)}/outputs/{title}/{chap_name}')
+    path = create_folder(f'{os.path.dirname(__file__)}\\outputs\\{title}\\{chap_name}')
 
     counter = 1
     url = f'{base_url}/{str(counter)}.{file_type}'
@@ -97,17 +97,29 @@ def download_chap_images(viewer_url, title, chap_name):
         print(f'Downloaded from {url} to {path}\nStatus code : {response_status}\n')
         sleep(0.3)
     print(f'\nStopped download at page {counter-1}\nStatus code : {response_status}\n')
-    if input('Combine this chapter into a pdf ? (y) ') == 'y' :
-        combine_subfolder(chap_dir=path)
+
+    # None => "let me decide for each one"
+    if combine_pdf:
+        combine_subfolder(chap_dir=path, output_dir=os.path.join(os.path.dirname(__file__),'outputs'))
+    elif combine_pdf is False :
+        None
+    elif combine_pdf is None and input('Combine this chapter into a pdf ? (y) ') == 'y' :
+        combine_subfolder(chap_dir=path, output_dir=os.path.join(os.path.dirname(__file__),'outputs'))
+    else:
+        None
     sleep(1)
 
 def download_menu(data):
-    menu = cm.MultiSelectMenu(title="What should be downloaded ?", subtitle="Inputs X,Y,Z and X-Z both work", epilogue_text="WARNING : Selecting will automatically start downloading !")
+    answers = [True, None, False]
+    pdf_menu = cm.SelectionMenu(strings=['Always yes', 'Always ask', 'Always no'])
+    pdf_behavior = answers[pdf_menu.get_selection(strings=['Always yes', 'Always ask', 'Always no'], title="How should the pdf combination behave ?", show_exit_option=False)]
+
+    chap_menu = cm.MultiSelectMenu(title="What should be downloaded ?", subtitle="Inputs X,Y,Z and X-Z both work", epilogue_text="WARNING : Selecting will automatically start downloading !")
     
     for chap in data['chaps'].keys():
-        menu.append_item(cm.items.FunctionItem(text=chap, function=download_chap_images, args=[data['chaps'][chap]['links']['viewer'], data['title'], chap], should_exit=True))
+        chap_menu.append_item(cm.items.FunctionItem(text=chap, function=download_chap_images, args=[data['chaps'][chap]['links']['viewer'], data['title'], chap, pdf_behavior], should_exit=True))
 
-    menu.show()
+    chap_menu.show()
 
 def main():
     catalog = input("Manga URL : ")
